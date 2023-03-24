@@ -137,7 +137,7 @@ extension LawTicketEntity: TicketEntityProtocol {
     }
     
     func updateTicket(entity: T, progressStatus: Int16) {
-        //let currentProgress = entity.progressStatus
+        let currentProgress = entity.progressStatus
         let newProgress = progressStatus
         entity.progressStatus = newProgress
         saveData()
