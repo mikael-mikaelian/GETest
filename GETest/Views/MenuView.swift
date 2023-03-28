@@ -18,8 +18,6 @@ struct MenuView: View {
     var body: some View {
         NavigationView {
             VStack (spacing: 20){
-                
-                
                 VStack {
                     Text("🇬🇪").font(.system(size: 120))
                     Text("საქართველოს მოქალაქეობის \n ტესტები")
@@ -64,18 +62,23 @@ struct MenuView: View {
                 Spacer()
                 NavigationLink {
                     SelectRangeView<LanguageTicketEntity>().environmentObject(languageQuestionsManager)
+                        .navigationTitle("აირჩიეთ ბილეთების ნომრები")
+
                 } label: {
                     TestTypeButton(text: "ქართული ენა").padding(.horizontal)
                 }
                 
                 NavigationLink {
                     SelectRangeView<HistoryTicketEntity>().environmentObject(historyQuestionsManager)
+                        .navigationTitle("აირჩიეთ ბილეთების ნომრები")
+
                 } label: {
                     TestTypeButton(text: "ისტორია").padding(.horizontal)
                 }
                 
                 NavigationLink {
                     SelectRangeView<LawTicketEntity>().environmentObject(lawQuestionsManager)
+                        .navigationTitle("აირჩიეთ ბილეთების ნომრები")
                 } label: {
                     TestTypeButton(text: "ᲡᲐᲛᲐᲠᲗᲚᲘᲡ ᲡᲐᲤᲣᲫᲕᲚᲔᲑᲘ").padding(.horizontal)
                 }

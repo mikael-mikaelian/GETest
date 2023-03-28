@@ -239,4 +239,12 @@ extension LawTicketEntity: TicketEntityProtocol {
         return result
     }
     
+    func isMistake(_ index: Int)-> Bool {
+        if ticketsCoplitionStatusStorage[index].progressStatus == 1 {
+            return true
+        } else {
+            return false
+        }
+    }
+    
 }

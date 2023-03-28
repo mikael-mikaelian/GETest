@@ -9,92 +9,45 @@ import SwiftUI
 
 struct SelectRangeView<T: TicketEntityProtocol>: View {
     @EnvironmentObject var questionsManager: QuestionsManager<T>
-    
     var body: some View {
             VStack{
-                Text("აირჩიეთ ბილეთების ნომრები")
-                    .padding(.top)
-                    .font(.title2)
-                    .fontWeight(.heavy)
-                    .foregroundColor(.accentColor)
-                Grid {
-                    GridRow {
-                        NavigationLink{
-                            TicketView<T>().environmentObject(questionsManager)
-                        } label: {
-                            rangeView(text: "1-20")
-                                
+                ScrollView {
+                    VStack {
+                        ForEach((0...9), id: \.self) { i in
+                            NavigationLink{
+                                TicketView<T>().environmentObject(questionsManager)
+                            } label: {
+                                rangeView(text: "\((i)*20+1)-\(i*20+20 == 200 ? questionsManager.getTicketsCount() : i*20+20)")
+                            }
+                            .simultaneousGesture(TapGesture().onEnded {
+                                questionsManager.reset()
+                                questionsManager.setTicket((i)*20)
+                                questionsManager.setStartIndex((i)*20)
+                                questionsManager.setEndIndex((i*20+19 == 200 ? questionsManager.getTicketsCount() : i*20+19))
+                            })
                         }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            questionsManager.reset()
-                            questionsManager.setStartIndex(0)
-                            questionsManager.setEndIndex(19)
-                        })
                         
                         NavigationLink{
-                            TicketView<T>().environmentObject(questionsManager)
+                            TicketView<T>(isMistakesMode: true).environmentObject(questionsManager)
                         } label: {
-                            rangeView(text: "21-40")
+                            rangeView(text: "ჩემი შეცდომები")
                         }
                         .simultaneousGesture(TapGesture().onEnded {
                             questionsManager.reset()
-                            questionsManager.setTicket(20)
-                            questionsManager.setStartIndex(20)
-                            questionsManager.setEndIndex(39)
-                        })
-                    }
-                    GridRow {
-                        NavigationLink{
-                            TicketView<T>().environmentObject(questionsManager)
-                        } label: {
-                        rangeView(text: "41-60")
-                        }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            questionsManager.reset()
-                            questionsManager.setTicket(40)
-                            questionsManager.setStartIndex(40)
-                            questionsManager.setEndIndex(59)
+                            questionsManager.setTicket(1)
+                            questionsManager.setStartIndex(1)
+                            questionsManager.setEndIndex(1)
                         })
                         
-                        NavigationLink {
-                            TicketView<T>().environmentObject(questionsManager)
-                        } label: {
-                            rangeView(text: "61-80")
-                        }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            questionsManager.reset()
-                            questionsManager.setTicket(60)
-                            questionsManager.setStartIndex(60)
-                            questionsManager.setEndIndex(79)
-                        })
-                    }
-                    GridRow {
-                        NavigationLink {
-                            TicketView<T>().environmentObject(questionsManager)
-                        } label: {
-                            rangeView(text: "81-100")
-                        }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            questionsManager.reset()
-                            questionsManager.setTicket(80)
-                            questionsManager.setStartIndex(80)
-                            questionsManager.setEndIndex(99)
-                        })
-                        
-                        rangeView(text: "101-120")
-                    }
-                    GridRow {
-                        rangeView(text: "121-140")
-                        rangeView(text: "141-160")
-                    }
-                    GridRow {
-                        rangeView(text: "161-180")
-                        rangeView(text: "181-200(+)")
                     }
                 }
-                .padding()
+                .scrollIndicators(.hidden)
+
+                .padding(.horizontal)
         }
+        
     }
+    
 }
 
 struct rangeView: View {
@@ -104,9 +57,9 @@ struct rangeView: View {
         VStack {
             Spacer()
             HStack {
-                Spacer()
                 Text(text)
                 Spacer()
+                Image(systemName: "chevron.right")
             }
             Spacer()
         }

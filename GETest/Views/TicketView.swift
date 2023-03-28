@@ -9,6 +9,8 @@ import SwiftUI
 
 struct TicketView<T: TicketEntityProtocol>: View {
     @EnvironmentObject var questionsManager: QuestionsManager<T>
+    var isMistakesMode: Bool = false
+    
     var body: some View {
         VStack {
             
@@ -28,11 +30,24 @@ struct TicketView<T: TicketEntityProtocol>: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     //MARK: - create chosen view
-                    ForEach(questionsManager.getStartIndex()..<questionsManager.getEndIndex()+1, id: \.self) { index in
-                        ticketBoxView<T>(index: index, isCurrent: questionsManager.isCurrent[index])
-                            .onTapGesture {
-                                questionsManager.setTicket(index)
+                    if !isMistakesMode {
+                        
+                        ForEach(questionsManager.getStartIndex()..<questionsManager.getEndIndex()+1, id: \.self) { index in
+                            ticketBoxView<T>(index: index, isCurrent: questionsManager.isCurrent[index])
+                                .onTapGesture {
+                                    questionsManager.setTicket(index)
+                                }
+                        }
+                        
+                    } else {
+                        ForEach(0..<questionsManager.getTicketsCount()+1, id: \.self) { index in
+                            if (questionsManager.isMistake(index)) {
+                                ticketBoxView<T>(index: index, isCurrent: questionsManager.isCurrent[index])
+                                    .onTapGesture {
+                                        questionsManager.setTicket(index)
+                                    }
                             }
+                        }
                     }
                 }
                 
