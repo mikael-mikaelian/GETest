@@ -37,10 +37,10 @@ struct RangeSelectView: View {
                     TicketView().environmentObject(manager)
                 } label: {
                     // Display the range on the button.
-                    RangeSelectionButtonView(text: "180-\(manager.getCurrentModeTickets().count)")
+                    RangeSelectionButtonView(text: "180-\(manager.getTickets(for: manager.currentMode).count)")
                 }.simultaneousGesture(TapGesture().onEnded{
                     // Set the range in the manager when a range is selected.
-                    manager.fetchTestSessionTickets(from: 180, to: manager.getCurrentModeTickets().count)
+                    manager.fetchTestSessionTickets(from: 180, to: manager.getTickets(for: manager.currentMode).count)
                 })
                 
                 NavigationLink{

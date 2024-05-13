@@ -23,22 +23,23 @@ struct TicketView: View {
             
             // MARK: - Header
             HStack {
-                // Display the current mode of the test session.
+                // Current mode of the test session.
                 Text(manager.currentMode == .language ? "ქარტული ენა" : manager.currentMode == .history ? "ისტორია" : "სამართლის საფუძვლები")
                     .font(.title2)
                     .fontWeight(.heavy)
                     .foregroundColor(.accentColor)
                 Spacer()
-                // Display the current question number.
+                // Current question number.
                 Text("კითხვა №\(currentQuestionNumber)")
                     .font(.title2)
                     .fontWeight(.heavy)
                     .foregroundColor(.accentColor)
                 
+                //Display the bookmark button
                 Button {
-                    manager.addToBookmarks(id: (Int(currentQuestionNumber) ?? 0)-1)
+                    manager.user.updateBookmarks(for: manager.currentMode, id: (Int(currentQuestionNumber) ?? 0)-1)
                 } label: {
-                    if (manager.getBookmarks().contains((Int(currentQuestionNumber) ?? 0)-1)) {
+                    if (manager.user.getBookmarks(for: manager.currentMode).contains((Int(currentQuestionNumber) ?? 0)-1)) {
                         Image(systemName: "bookmark.fill")
                     } else {
                         Image(systemName: "bookmark")
@@ -115,11 +116,11 @@ struct AnswerRowButton: View {
             // If the answer is correct, update the progress of the ticket and the manager.
             if answer.isCorrect {
                 ticket.setProgress(progress: .correct)
-                manager.updateProgress(id: ticket.getTicketIntNumber(), progress: .correct)
+                manager.user.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .correct)
             } else {
                 // If the answer is incorrect, mark the progress of the ticket as incorrect.
                 ticket.setProgress(progress: .incorrect)
-                manager.updateProgress(id: ticket.getTicketIntNumber(), progress: .incorrect)
+                manager.user.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .incorrect)
             }
             
         } label: {

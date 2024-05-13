@@ -46,10 +46,11 @@ struct ProgressViewContainer: View {
     var body: some View {
         VStack(spacing: 20){
             // Progress views for each category
-            ProgressViewRow(title: "თქვენი პროგრესი", count: 611, value: manager.user.getProgress(mode: .history) + manager.user.getProgress(mode: .law) + manager.user.getProgress(mode: .language)).padding(.bottom)
-            ProgressViewRow(title: "ქართულ ენაში", count: manager.tickets?.languageTickets.count ?? 0, value: manager.user.getProgress(mode: .language))
-            ProgressViewRow(title: "ისტორიაში", count: manager.tickets?.historyTickets.count ?? 0, value: manager.user.getProgress(mode: .history))
-            ProgressViewRow(title: "სამართლის საფუძვლებში", count: manager.tickets?.lawTickets.count ?? 0, value: manager.user.getProgress(mode: .law))
+            ProgressViewRow(title: "თქვენი პროგრესი", count: 611, value: manager.user.getCorrectProgressCount(mode: .history) + manager.user.getCorrectProgressCount(mode: .law) + manager.user.getCorrectProgressCount(mode: .language))
+                .padding(.bottom)
+            ProgressViewRow(title: "ქართულ ენაში", count: manager.tickets?.languageTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .language))
+            ProgressViewRow(title: "ისტორიაში", count: manager.tickets?.historyTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .history))
+            ProgressViewRow(title: "სამართლის საფუძვლებში", count: manager.tickets?.lawTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .law))
         }
         .padding() // Padding for layout
     }

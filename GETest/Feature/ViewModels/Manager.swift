@@ -11,7 +11,7 @@ import Foundation
 class Manager: ObservableObject {
     // MARK: - Properties
     // User object for the test session.
-    @Published private(set) var user = User()
+    @Published var user = User()
     // Tickets for the test sessions.
     @Published private(set) var tickets: Tickets?
     // Tickets for a specified test
@@ -56,7 +56,7 @@ class Manager: ObservableObject {
         
         var count = lowerBound-1
         // Fetching the tickets for the current mode
-        let currentModeTickets = getCurrentModeTickets()
+        let currentModeTickets = getTickets(for: currentMode)
         
         // Looping through the range and adding the tickets to the session
         repeat {
@@ -68,26 +68,10 @@ class Manager: ObservableObject {
     // Fetches the session tickets where the user made a mistake
     func fetchMistakeSessionTickets() {
         // Fetching the progress based on the current mode
-        let progresses: [Progress] =
-        switch currentMode {
-        case .language:
-            user.languageProgress
-        case .history:
-            user.historyProgress
-        case .law:
-            user.lawProgress
-        }
+        let progresses = user.getProgress(for: currentMode)
         
         // Fetching the tickets based on the current mode
-        let tickets: [Ticket] =
-        switch currentMode {
-        case .language:
-            tickets!.languageTickets
-        case .history:
-            tickets!.languageTickets
-        case .law:
-            tickets!.languageTickets
-        }
+        let tickets = getTickets(for: currentMode)
         
         // Clearing the existing session tickets
         sessionTickets.removeAll()
@@ -110,93 +94,24 @@ class Manager: ObservableObject {
         user.lawProgress = Array(repeating: .incomplete, count: tickets?.lawTickets.count ?? 0)
     }
     
-    // Returns the current tickets based on the mode.
-    func getCurrentModeTickets() -> [Ticket] {
-        switch currentMode {
-        case .language:
-            return tickets!.languageTickets
-        case .history:
-            return tickets!.historyTickets
-        case .law:
-            return tickets!.lawTickets
-        }
-    }
-    
     // Sets the mode of the test session.
     func setMode(mode: TestMode) { // Accept a TestMode value
         currentMode = mode
     }
     
-    // Updates the progress of a specific ticket based on the mode.
-    func updateProgress(id: Int, progress: Progress) {
-        
-        switch currentMode {
+    
+    
+    func getTickets(for mode: TestMode) -> [Ticket] {
+        switch mode {
         case .language:
-            user.languageProgress[id-1] = progress
+            return tickets?.languageTickets ?? []
         case .history:
-            user.historyProgress[id-1] = progress
+            return tickets?.historyTickets ?? []
         case .law:
-            user.lawProgress[id-1] = progress
+            return tickets?.lawTickets ?? []
         }
-        
     }
     
-    func addToBookmarks(id: Int) {
-        // Computed property to get and set the appropriate bookmark IDs based on the currentMode
-        var bookmarksIds: [Int] {
-            get {
-                switch currentMode {
-                case .language:
-                    return user.languageBookmarksIds
-                case .history:
-                    return user.historyBookmarksIds
-                case .law:
-                    return user.lawBookmarksIds
-                }
-            }
-            set {
-                switch currentMode {
-                case .language:
-                    user.languageBookmarksIds = newValue
-                case .history:
-                    user.historyBookmarksIds = newValue
-                case .law:
-                    user.lawBookmarksIds = newValue
-                }
-            }
-        }
-
-        // Check if the id exists in the bookmarksIds array
-        if let index = bookmarksIds.firstIndex(of: id) {
-            // If it does, remove it
-            bookmarksIds.remove(at: index)
-        } else {
-            // If not, add it
-            bookmarksIds.append(id)
-        }
-
-        // Print the updated bookmarksIds
-        print(bookmarksIds)
-    }
-    
-    
-    func getBookmarks() -> [Int] {
-        var bookmarksIds: [Int] {
-            get {
-                switch currentMode {
-                case .language:
-                    return user.languageBookmarksIds
-                case .history:
-                    return user.historyBookmarksIds
-                case .law:
-                    return user.lawBookmarksIds
-                }
-            }
-        }
-        
-        return bookmarksIds
-    }
-
 }
 
 // Enum for the mode of the test session.
