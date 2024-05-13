@@ -129,9 +129,3 @@ struct TestSelectionButtonView: View {
         .padding(.horizontal)
     }
 }
-
-struct TestSelectionButton_Previews: PreviewProvider {
-    static var previews: some View {
-        TestSelectionButtonView(text: "ქართული ენა")
-    }
-}

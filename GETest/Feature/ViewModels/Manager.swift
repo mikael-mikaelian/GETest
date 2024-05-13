@@ -20,9 +20,7 @@ class Manager: ObservableObject {
     private(set) var currentMode: TestMode = .language
     // Range of tickets for the test session.
     @Published private(set) var rangeTickets: [Ticket] = []
-    // Progress of the range of tickets.
-    private(set) var rangeProgress: [Progress] = []
-
+    
     // MARK: - Initializer
     // Fetches tickets on initialization.
     init() {
@@ -51,23 +49,64 @@ class Manager: ObservableObject {
         }
     }
     
+    // Fetches the test session tickets within a given range
     func fetchTestSessionTickets(from lowerBound: Int, to upperBound: Int) {
+        // Clearing the existing session tickets
         sessionTickets.removeAll()
-        rangeProgress.removeAll()
+        
         var count = lowerBound-1
+        // Fetching the tickets for the current mode
         let currentModeTickets = getCurrentModeTickets()
+        
+        // Looping through the range and adding the tickets to the session
         repeat {
             sessionTickets.append(SessionTicket(ticket: currentModeTickets[count]))
             count += 1
         } while (count < upperBound)
     }
+
+    // Fetches the session tickets where the user made a mistake
+    func fetchMistakeSessionTickets() {
+        // Fetching the progress based on the current mode
+        let progresses: [Progress] =
+        switch currentMode {
+        case .language:
+            user.languageProgress
+        case .history:
+            user.historyProgress
+        case .law:
+            user.lawProgress
+        }
+        
+        // Fetching the tickets based on the current mode
+        let tickets: [Ticket] =
+        switch currentMode {
+        case .language:
+            tickets!.languageTickets
+        case .history:
+            tickets!.languageTickets
+        case .law:
+            tickets!.languageTickets
+        }
+        
+        // Clearing the existing session tickets
+        sessionTickets.removeAll()
+        
+        // Looping through the progress and adding the incorrect tickets to the session
+        for (id, progress) in progresses.enumerated() {
+            if progress == .incorrect {
+                sessionTickets.append(SessionTicket(ticket:tickets[id] ))
+            }
+        }
+    }
+
     
     // Fetches progress for each category of tickets.
     func fetchProgress() {
         user.languageProgress = Array(repeating: .incomplete, count: tickets?.languageTickets.count ?? 0)
         
         user.historyProgress = Array(repeating: .incomplete, count: tickets?.historyTickets.count ?? 0)
-
+        
         user.lawProgress = Array(repeating: .incomplete, count: tickets?.lawTickets.count ?? 0)
     }
     
@@ -99,7 +138,7 @@ class Manager: ObservableObject {
         case .law:
             user.lawProgress[id-1] = progress
         }
-         
+        
     }
 }
 
