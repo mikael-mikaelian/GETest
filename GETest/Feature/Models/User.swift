@@ -17,8 +17,8 @@ struct User {
     var lawProgress:      [Progress] = []  // Progress of the user in law category.
     
     var languageBookmarksIds: [Int] = []
-    var historyBookmarksIds: [Int] = []
-    var lawBookmarksIds: [Int] = []
+    var historyBookmarksIds:  [Int] = []
+    var lawBookmarksIds:      [Int] = []
     
     
     func getProgress(for mode: TestMode) -> [Progress] {

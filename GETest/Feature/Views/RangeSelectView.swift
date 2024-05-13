@@ -16,6 +16,52 @@ struct RangeSelectView: View {
     var body: some View {
         ScrollView {
             VStack {
+                HStack() {
+                    NavigationLink {
+                        // Navigate to the TicketView when the last range is selected.
+                        TicketView().environmentObject(manager)
+                    } label: {
+                        HStack{
+                            // Display the range text.
+                            Text("შეცდომები")
+                            Image(systemName: "xmark.circle")
+                        }
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .fontWeight(.heavy)
+                        .padding()
+                        .background(Color.accentColor)
+                        .cornerRadius(20)
+                        .shadow(radius: 5)
+                    }
+                    .simultaneousGesture(TapGesture().onEnded{
+                        // Set the range in the manager when a range is selected.
+                        manager.fetchMistakeSessionTickets()
+                    })
+                    .disabled(!manager.user.getProgress(for: manager.currentMode).contains(where: {$0 == .incorrect}))
+                    
+                    NavigationLink {
+                        // Navigate to the TicketView when the last range is selected.
+                        TicketView().environmentObject(manager)
+                    } label: {
+                        HStack{
+                            Image(systemName: "bookmark")
+                        }
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .fontWeight(.heavy)
+                        .padding()
+                        .background(Color.accentColor)
+                        .cornerRadius(20)
+                        .shadow(radius: 5)
+                    }
+                    .simultaneousGesture(TapGesture().onEnded{
+                        // Set the range in the manager when a range is selected.
+                        manager.fetchBookmarksSessionTickets()
+                    })
+                    .disabled(manager.user.getBookmarks(for: manager.currentMode).isEmpty)
+                }
+                .padding()
                 // Display a range selection button for each set of 20 tickets.
                 ForEach(1...9, id: \.self) { index in
                     let lowerBound = ((index - 1) * 20) + 1
@@ -41,17 +87,6 @@ struct RangeSelectView: View {
                 }.simultaneousGesture(TapGesture().onEnded{
                     // Set the range in the manager when a range is selected.
                     manager.fetchTestSessionTickets(from: 180, to: manager.getTickets(for: manager.currentMode).count)
-                })
-                
-                NavigationLink{
-                    // Navigate to the TicketView when the last range is selected.
-                    TicketView().environmentObject(manager)
-                } label: {
-                    // Display the range on the button.
-                    RangeSelectionButtonView(text: "შეცდომები")
-                }.simultaneousGesture(TapGesture().onEnded{
-                    // Set the range in the manager when a range is selected.
-                    manager.fetchMistakeSessionTickets()
                 })
             }
         }

@@ -10,14 +10,16 @@ import Foundation
 // MARK: - Manager Class
 class Manager: ObservableObject {
     // MARK: - Properties
+    
+    // Current mode of the test session.
+    private(set) var currentMode: TestMode = .language
+    
     // User object for the test session.
-    @Published var user = User()
+    @Published              var user = User()
     // Tickets for the test sessions.
     @Published private(set) var tickets: Tickets?
     // Tickets for a specified test
     @Published private(set) var sessionTickets: [SessionTicket] = []
-    // Current mode of the test session.
-    private(set) var currentMode: TestMode = .language
     // Range of tickets for the test session.
     @Published private(set) var rangeTickets: [Ticket] = []
     
@@ -81,6 +83,22 @@ class Manager: ObservableObject {
             if progress == .incorrect {
                 sessionTickets.append(SessionTicket(ticket:tickets[id] ))
             }
+        }
+    }
+    
+    func fetchBookmarksSessionTickets() {
+        // Fetching the progress based on the current mode
+        let bookmarks = user.getBookmarks(for: currentMode)
+        
+        // Fetching the tickets based on the current mode
+        let tickets = getTickets(for: currentMode)
+        
+        // Clearing the existing session tickets
+        sessionTickets.removeAll()
+        
+        // Looping through the progress and adding the incorrect tickets to the session
+        for bookmark in bookmarks {
+            sessionTickets.append(SessionTicket(ticket:tickets[bookmark] ))
         }
     }
 
