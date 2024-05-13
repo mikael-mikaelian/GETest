@@ -109,6 +109,7 @@ struct AnswerRowButton: View {
             } else {
                 // If the answer is incorrect, mark the progress of the ticket as incorrect.
                 ticket.setProgress(progress: .incorrect)
+                manager.updateProgress(id: ticket.getTicketIntNumber(), progress: .incorrect)
             }
             
         } label: {

@@ -42,6 +42,17 @@ struct RangeSelectView: View {
                     // Set the range in the manager when a range is selected.
                     manager.fetchTestSessionTickets(from: 180, to: manager.getCurrentModeTickets().count)
                 })
+                
+                NavigationLink{
+                    // Navigate to the TicketView when the last range is selected.
+                    TicketView().environmentObject(manager)
+                } label: {
+                    // Display the range on the button.
+                    RangeSelectionButtonView(text: "შეცდომები")
+                }.simultaneousGesture(TapGesture().onEnded{
+                    // Set the range in the manager when a range is selected.
+                    manager.fetchMistakeSessionTickets()
+                })
             }
         }
     }
