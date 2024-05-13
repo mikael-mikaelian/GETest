@@ -140,6 +140,63 @@ class Manager: ObservableObject {
         }
         
     }
+    
+    func addToBookmarks(id: Int) {
+        // Computed property to get and set the appropriate bookmark IDs based on the currentMode
+        var bookmarksIds: [Int] {
+            get {
+                switch currentMode {
+                case .language:
+                    return user.languageBookmarksIds
+                case .history:
+                    return user.historyBookmarksIds
+                case .law:
+                    return user.lawBookmarksIds
+                }
+            }
+            set {
+                switch currentMode {
+                case .language:
+                    user.languageBookmarksIds = newValue
+                case .history:
+                    user.historyBookmarksIds = newValue
+                case .law:
+                    user.lawBookmarksIds = newValue
+                }
+            }
+        }
+
+        // Check if the id exists in the bookmarksIds array
+        if let index = bookmarksIds.firstIndex(of: id) {
+            // If it does, remove it
+            bookmarksIds.remove(at: index)
+        } else {
+            // If not, add it
+            bookmarksIds.append(id)
+        }
+
+        // Print the updated bookmarksIds
+        print(bookmarksIds)
+    }
+    
+    
+    func getBookmarks() -> [Int] {
+        var bookmarksIds: [Int] {
+            get {
+                switch currentMode {
+                case .language:
+                    return user.languageBookmarksIds
+                case .history:
+                    return user.historyBookmarksIds
+                case .law:
+                    return user.lawBookmarksIds
+                }
+            }
+        }
+        
+        return bookmarksIds
+    }
+
 }
 
 // Enum for the mode of the test session.

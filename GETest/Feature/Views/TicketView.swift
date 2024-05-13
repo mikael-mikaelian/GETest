@@ -34,6 +34,16 @@ struct TicketView: View {
                     .font(.title2)
                     .fontWeight(.heavy)
                     .foregroundColor(.accentColor)
+                
+                Button {
+                    manager.addToBookmarks(id: (Int(currentQuestionNumber) ?? 0)-1)
+                } label: {
+                    if (manager.getBookmarks().contains((Int(currentQuestionNumber) ?? 0)-1)) {
+                        Image(systemName: "bookmark.fill")
+                    } else {
+                        Image(systemName: "bookmark")
+                    }
+                }
             }
             .padding(.horizontal)
                 

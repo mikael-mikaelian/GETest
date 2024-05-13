@@ -16,6 +16,11 @@ struct User {
     var languageProgress: [Progress] = []  // Progress of the user in language category.
     var lawProgress:      [Progress] = []  // Progress of the user in law category.
     
+    var languageBookmarksIds: [Int] = []
+    var historyBookmarksIds: [Int] = []
+    var lawBookmarksIds: [Int] = []
+
+    
     // Method to get the progress of the user based on the mode.
     func getProgress (mode: TestMode) -> Int {
         switch mode {
