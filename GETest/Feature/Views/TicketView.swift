@@ -14,7 +14,8 @@ struct TicketView: View {
     @EnvironmentObject var manager: Manager
     // The current question number being displayed.
     @State var currentQuestionNumber: String = ""
-    // Manager object to handle the test session.
+    @State var currentQuestionId = 0
+    @State var currentQuestionIdProgress = 0
     
     
     // MARK: - Body
@@ -26,17 +27,16 @@ struct TicketView: View {
                 // Current mode of the test session.
                 Text(manager.currentMode == .language ? "ქარტული ენა" : manager.currentMode == .history ? "ისტორია" : "სამართლის საფუძვლები")
                     .font(.title2)
-                    .fontWeight(.heavy)
                     .foregroundColor(.accentColor)
                 Spacer()
                 // Current question number.
                 Text("კითხვა №\(currentQuestionNumber)")
                     .font(.title2)
-                    .fontWeight(.heavy)
                     .foregroundColor(.accentColor)
                 
                 //Display the bookmark button
                 Button {
+                    generateImpact()
                     manager.user.updateBookmarks(for: manager.currentMode, id: (Int(currentQuestionNumber) ?? 0)-1)
                 } label: {
                     if (manager.user.getBookmarks(for: manager.currentMode).contains((Int(currentQuestionNumber) ?? 0)-1)) {
@@ -46,22 +46,25 @@ struct TicketView: View {
                     }
                 }
             }
-            .padding(.horizontal)
-                
+            .padding()
+            
+            ProgressView(value: Float(Int(currentQuestionIdProgress) ), total: Float(manager.sessionTickets.count))
+                .padding()
+            
             // MARK: - Question
-            TabView(){
+            TabView(selection: $currentQuestionId) {
                 // Iterate over each ticket in the test session.
-                ForEach(manager.sessionTickets, id: \.self) {ticket in
+                ForEach(Array(manager.sessionTickets.enumerated()), id: \.element) { index, ticket in
                     VStack{
                         HStack {
                             // Display the question of the ticket.
                             Text(ticket.getTicketQuestion())
                                 .multilineTextAlignment(.leading)
                                 .padding()
+                                .font(.title2)
                             Spacer()
                         }
-                        .background(Material.regular)
-
+                        
                         //MARK: - Answer Choices
                         ScrollView {
                             // Iterate over each answer choice of the ticket.
@@ -69,16 +72,36 @@ struct TicketView: View {
                                 // Display each answer choice as a row button.
                                 AnswerRowButton(answer: answer, ticket: ticket).environmentObject(manager)
                             }
-                            .padding(.top)
+                            .padding(.bottom)
                         }
                     }
                     .onAppear(){
                         // Update the current question number when the ticket appears.
                         currentQuestionNumber = ticket.getTicketNumber()
+                        currentQuestionIdProgress = index
                     }
-                    
+                    .tag(index)
                 }
             }.tabViewStyle(PageTabViewStyle())
+            
+            Button {
+                generateImpact()
+                currentQuestionId += currentQuestionId == manager.sessionTickets.count-1 ? 0 : 1
+            } label: {
+                HStack{
+                    Spacer()
+                    Text("შემდეგი შეკითხვა")
+                    Spacer()
+                }
+                .foregroundColor(Color(.white))
+                .padding()
+                .background(Color.accentColor)
+                .cornerRadius(20)
+                .padding(.horizontal)
+            }
+            
+            
+            
         }
     }
 }
@@ -111,6 +134,7 @@ struct AnswerRowButton: View {
     // MARK: - Body
     var body: some View {
         Button {
+            generateImpact()
             // When the button is pressed, mark the answer as selected.
             answer.isSelected = true
             // If the answer is correct, update the progress of the ticket and the manager.
@@ -125,7 +149,6 @@ struct AnswerRowButton: View {
             
         } label: {
             HStack{
-                Spacer()
                 // Display the text of the answer choice.
                 Text(answer.answerText)
                 Spacer()
@@ -138,7 +161,10 @@ struct AnswerRowButton: View {
             .background(Material.regular)
             .cornerRadius(20)
             .padding(.horizontal)
+            
         }
+        
+        
         // Disable the button if the progress of the ticket is not incomplete.
         .disabled(ticket.progress != .incomplete)
     }

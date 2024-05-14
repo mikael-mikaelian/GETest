@@ -24,6 +24,7 @@ class SessionTicket: Identifiable, Hashable, ObservableObject {
         
         for answer in ticket.getAnswerChoices() {
             answers.append(Answer(answerText: answer, isSelected: false, isCorrect: answer == ticket.correctAnswer))
+            answers.shuffle()
         }
     }
     

@@ -55,6 +55,18 @@ struct User {
         }
     }
     
+    // Method to get the progress of the user based on the mode.
+    func getIncorrectProgressCount (mode: TestMode) -> Int {
+        switch mode {
+        case .language:
+            return languageProgress.filter { $0 == .incorrect }.count
+        case .history:
+            return historyProgress.filter { $0 == .incorrect }.count
+        case .law:
+            return lawProgress.filter { $0 == .incorrect }.count
+        }
+    }
+    
     // Updates the progress of a specific ticket based on the mode.
     mutating func updateProgress(for mode: TestMode, id: Int, progress: Progress) {
         switch mode {
@@ -97,5 +109,11 @@ struct User {
             lawBookmarksIds = bookmarksIds
         }
     }
-    
+}
+
+// Enum for the progress of a ticket.
+enum Progress: String {
+    case correct = "correct"
+    case incorrect = "incorrect"
+    case incomplete = "incomplete"
 }

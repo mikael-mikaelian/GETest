@@ -138,10 +138,3 @@ enum TestMode: String {
     case history = "history"
     case law = "law"
 }
-
-// Enum for the progress of a ticket.
-enum Progress: String {
-    case correct = "correct"
-    case incorrect = "incorrect"
-    case incomplete = "incomplete"
-}

@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		6C0DB9042BF252690068E731 /* SessionTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0DB9032BF252690068E731 /* SessionTicket.swift */; };
 		6C0DB9062BF252960068E731 /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0DB9052BF252960068E731 /* Answer.swift */; };
+		6C5540552BF358FA0047CAED /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5540542BF358FA0047CAED /* Extensions.swift */; };
+		6C5540672BF3729D0047CAED /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6C5540662BF3729D0047CAED /* RealmSwift */; };
+		6C55406F2BF379E50047CAED /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 6C5540662BF3729D0047CAED /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6C8308BB2BF0CC4200DD3929 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8308BA2BF0CC4200DD3929 /* User.swift */; };
 		6CBBA1D92BE550B60083D533 /* TicketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBBA1D82BE550B60083D533 /* TicketView.swift */; };
 		6CF377E32BE4FFEC004D4114 /* GETestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF377E22BE4FFEC004D4114 /* GETestApp.swift */; };
@@ -21,9 +24,24 @@
 		6CF377FC2BE518A4004D4114 /* RangeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF377FB2BE518A4004D4114 /* RangeSelectView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		6C55406B2BF3784E0047CAED /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6C55406F2BF379E50047CAED /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		6C0DB9032BF252690068E731 /* SessionTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTicket.swift; sourceTree = "<group>"; };
 		6C0DB9052BF252960068E731 /* Answer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
+		6C5540542BF358FA0047CAED /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		6C8308BA2BF0CC4200DD3929 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6CBBA1D82BE550B60083D533 /* TicketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketView.swift; sourceTree = "<group>"; };
 		6CF377DF2BE4FFEC004D4114 /* GETest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GETest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6C5540672BF3729D0047CAED /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +81,7 @@
 				6C3CD37B2BE657510082A637 /* ViewModels */,
 				6CF377F62BE504D3004D4114 /* Models */,
 				6CF377FD2BE518AD004D4114 /* Views */,
+				6C5540542BF358FA0047CAED /* Extensions.swift */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -74,11 +94,19 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
+		6C5540682BF3784E0047CAED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6CF377D62BE4FFEC004D4114 = {
 			isa = PBXGroup;
 			children = (
 				6CF377E12BE4FFEC004D4114 /* GETest */,
 				6CF377E02BE4FFEC004D4114 /* Products */,
+				6C5540682BF3784E0047CAED /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,12 +169,16 @@
 				6CF377DB2BE4FFEC004D4114 /* Sources */,
 				6CF377DC2BE4FFEC004D4114 /* Frameworks */,
 				6CF377DD2BE4FFEC004D4114 /* Resources */,
+				6C55406B2BF3784E0047CAED /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = GETest;
+			packageProductDependencies = (
+				6C5540662BF3729D0047CAED /* RealmSwift */,
+			);
 			productName = GETest;
 			productReference = 6CF377DF2BE4FFEC004D4114 /* GETest.app */;
 			productType = "com.apple.product-type.application";
@@ -175,6 +207,9 @@
 				Base,
 			);
 			mainGroup = 6CF377D62BE4FFEC004D4114;
+			packageReferences = (
+				6C5540632BF3729D0047CAED /* XCRemoteSwiftPackageReference "realm-swift" */,
+			);
 			productRefGroup = 6CF377E02BE4FFEC004D4114 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -204,6 +239,7 @@
 			files = (
 				6C0DB9042BF252690068E731 /* SessionTicket.swift in Sources */,
 				6CF377E52BE4FFEC004D4114 /* MenuView.swift in Sources */,
+				6C5540552BF358FA0047CAED /* Extensions.swift in Sources */,
 				6CF377F82BE504DF004D4114 /* Tickets.swift in Sources */,
 				6C0DB9062BF252960068E731 /* Answer.swift in Sources */,
 				6CBBA1D92BE550B60083D533 /* TicketView.swift in Sources */,
@@ -418,6 +454,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6C5540632BF3729D0047CAED /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6C5540662BF3729D0047CAED /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6C5540632BF3729D0047CAED /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6CF377D72BE4FFEC004D4114 /* Project object */;
 }
