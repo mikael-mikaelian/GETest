@@ -23,7 +23,8 @@ class Manager: ObservableObject {
     // Tickets for a specified test
     @Published private(set) var sessionTickets: [SessionTicket] = []
     // Range of tickets for the test session.
-    @Published private(set) var rangeTickets: [Ticket] = []
+    @Published private(set) var ranges: [(Int,Int)] = []
+    @Published private(set) var doShuffle: Bool = false
     
     // MARK: - Initializer
     // Fetches tickets on initialization.
@@ -61,6 +62,9 @@ class Manager: ObservableObject {
         user.lawBookmarksIds = coreDataManager.fetchSavedBookmarks(for: .law)
     }
     
+    func switchShuffle() {
+        doShuffle = !doShuffle
+    }
     func fetchSavedProgress() {
         user.updateProgress(progressArray: coreDataManager.fetchSavedProgress(for: .language), mode: .language)
         user.updateProgress(progressArray: coreDataManager.fetchSavedProgress(for: .history), mode: .history)
@@ -77,10 +81,23 @@ class Manager: ObservableObject {
         coreDataManager.updateProgress(for: mode, id: id, progress: progress)
     }
     
+    func switchRange(from: Int, to: Int) {
+        if ranges.contains(where: { $0 == (from, to) }) {
+            // If the range is already in the array, remove it
+            ranges.removeAll(where: { $0 == (from, to) })
+        } else {
+            // If the range is not in the array, append it
+            ranges.append((from, to))
+        }
+    }
+
+    
     // Fetches the test session tickets within a given range
-    func fetchTestSessionTickets(from lowerBound: Int, to upperBound: Int) {
+    func fetchTestSessionTickets(from lowerBound: Int, to upperBound: Int, removeAll: Bool = true) {
         // Clearing the existing session tickets
-        sessionTickets.removeAll()
+        if removeAll {
+            sessionTickets.removeAll()
+        }
         
         var count = lowerBound-1
         // Fetching the tickets for the current mode
@@ -92,6 +109,20 @@ class Manager: ObservableObject {
             count += 1
         } while (count < upperBound)
     }
+    
+    func fetchTestSessionTickets() {
+        // Clearing the existing session tickets
+        sessionTickets.removeAll()
+        
+        for range in ranges {
+            fetchTestSessionTickets(from: range.0, to: range.1, removeAll: false)
+        }
+        
+        if doShuffle {
+            sessionTickets.shuffle()
+        }
+    }
+
     
     // Fetches the session tickets where the user made a mistake
     func fetchMistakeSessionTickets() {

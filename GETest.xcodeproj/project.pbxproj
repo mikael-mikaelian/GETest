@@ -70,6 +70,7 @@
 		6C0DB9002BF24EDF0068E731 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6C4AD7AF2BF498EB000427D4 /* UserModel.xcdatamodeld */,
 				6CF377F92BE50865004D4114 /* tickets.json */,
 			);
 			path = Resources;
@@ -122,7 +123,6 @@
 		6CF377E12BE4FFEC004D4114 /* GETest */ = {
 			isa = PBXGroup;
 			children = (
-				6C4AD7AF2BF498EB000427D4 /* UserModel.xcdatamodeld */,
 				6C0DB9012BF250AB0068E731 /* Feature */,
 				6C0DB9002BF24EDF0068E731 /* Resources */,
 				6CF377E22BE4FFEC004D4114 /* GETestApp.swift */,
@@ -464,8 +464,7 @@
 				6C4AD7B02BF498EB000427D4 /* UserModel.xcdatamodel */,
 			);
 			currentVersion = 6C4AD7B02BF498EB000427D4 /* UserModel.xcdatamodel */;
-			name = UserModel.xcdatamodeld;
-			path = ../UserModel.xcdatamodeld;
+			path = UserModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
