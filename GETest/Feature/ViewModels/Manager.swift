@@ -12,6 +12,7 @@ class Manager: ObservableObject {
     // MARK: - Properties
     let coreDataManager = CoreDataManager()
     
+    
     // Current mode of the test session.
     private(set) var currentMode: TestMode = .language
     
