@@ -37,7 +37,7 @@ struct TicketView: View {
                 //Display the bookmark button
                 Button {
                     generateImpact()
-                    manager.user.updateBookmarks(for: manager.currentMode, id: (Int(currentQuestionNumber) ?? 0)-1)
+                    manager.updateBookmarks(for: manager.currentMode, id: (Int(currentQuestionNumber) ?? 0)-1)
                 } label: {
                     if (manager.user.getBookmarks(for: manager.currentMode).contains((Int(currentQuestionNumber) ?? 0)-1)) {
                         Image(systemName: "bookmark.fill")
@@ -140,11 +140,11 @@ struct AnswerRowButton: View {
             // If the answer is correct, update the progress of the ticket and the manager.
             if answer.isCorrect {
                 ticket.setProgress(progress: .correct)
-                manager.user.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .correct)
+                manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .correct)
             } else {
                 // If the answer is incorrect, mark the progress of the ticket as incorrect.
                 ticket.setProgress(progress: .incorrect)
-                manager.user.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .incorrect)
+                manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .incorrect)
             }
             
         } label: {

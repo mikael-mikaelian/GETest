@@ -10,6 +10,7 @@ import Foundation
 // MARK: - Manager Class
 class Manager: ObservableObject {
     // MARK: - Properties
+    let coreDataManager = CoreDataManager()
     
     // Current mode of the test session.
     private(set) var currentMode: TestMode = .language
@@ -44,11 +45,35 @@ class Manager: ObservableObject {
                 DispatchQueue.main.async { [self] in
                     tickets = decodedData
                     fetchProgress()
+                    fetchSavedBookmarks()
+                    fetchSavedProgress()
                 }
             } catch {
                 print("error:\(error)")
             }
         }
+    }
+    
+    func fetchSavedBookmarks() {
+        user.languageBookmarksIds = coreDataManager.fetchSavedBookmarks(for: .language)
+        user.historyBookmarksIds = coreDataManager.fetchSavedBookmarks(for: .history)
+        user.lawBookmarksIds = coreDataManager.fetchSavedBookmarks(for: .law)
+    }
+    
+    func fetchSavedProgress() {
+        user.updateProgress(progressArray: coreDataManager.fetchSavedProgress(for: .language), mode: .language)
+        user.updateProgress(progressArray: coreDataManager.fetchSavedProgress(for: .history), mode: .history)
+        user.updateProgress(progressArray: coreDataManager.fetchSavedProgress(for: .law), mode: .law)
+    }
+    
+    func updateBookmarks(for mode: TestMode, id: Int) {
+        user.updateBookmarks(for: mode, id: id)
+        coreDataManager.updateBookmarks(for: mode, id: id)
+    }
+    
+    func updateProgress(for mode: TestMode, id: Int, progress: Progress) {
+        user.updateProgress(for: mode, id: id, progress: progress)
+        coreDataManager.updateProgress(for: mode, id: id, progress: progress)
     }
     
     // Fetches the test session tickets within a given range
@@ -66,7 +91,7 @@ class Manager: ObservableObject {
             count += 1
         } while (count < upperBound)
     }
-
+    
     // Fetches the session tickets where the user made a mistake
     func fetchMistakeSessionTickets() {
         // Fetching the progress based on the current mode
@@ -101,7 +126,7 @@ class Manager: ObservableObject {
             sessionTickets.append(SessionTicket(ticket:tickets[bookmark] ))
         }
     }
-
+    
     
     // Fetches progress for each category of tickets.
     func fetchProgress() {

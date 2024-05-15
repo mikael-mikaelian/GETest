@@ -29,9 +29,15 @@ struct MenuView: View {
 struct HeaderView: View {
     var body: some View {
         VStack {
+            /*
+            Image("Flag")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 120)
+                .padding()*/
             Text("🇬🇪").font(.system(size: 120)) // Emoji text
             Text("საქართველოს მოქალაქეობის ტესტები") // Title text
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.heavy)
                 .foregroundColor(.accentColor)
                 .multilineTextAlignment(.center)
@@ -67,7 +73,7 @@ struct ProgressViewRow: View {
             HStack {
                 Text(title) // Title text
                 Spacer() // Spacer for layout
-                Text("\(count)-დან") // Count text
+                Text("\(count)-დან \(value)") // Count text
             }
 
             ProgressView(value: Float(value), total: Float(count))

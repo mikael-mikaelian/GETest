@@ -10,8 +10,6 @@ import Foundation
 // MARK: - User Struct
 // This struct represents a user in the test session.
 struct User {
-    
-    
     var historyProgress:  [Progress] = []  // Progress of the user in history category.
     var languageProgress: [Progress] = []  // Progress of the user in language category.
     var lawProgress:      [Progress] = []  // Progress of the user in law category.
@@ -107,6 +105,49 @@ struct User {
             historyBookmarksIds = bookmarksIds
         case .law:
             lawBookmarksIds = bookmarksIds
+        }
+    }
+
+    mutating func updateProgress(progressArray: [[Int: String]], mode: TestMode) {
+        for progressDict in progressArray {
+            for (index, rawValue) in progressDict {
+                guard let progress = Progress(rawValue: rawValue) else {
+                    print("Invalid raw value for Progress enum: \(rawValue)")
+                    continue
+                }
+                
+                switch mode {
+                case .history:
+                    if index < historyProgress.count {
+                        historyProgress[index] = progress
+                    } else {
+                        print("Index out of range: \(index)")
+                    }
+                case .language:
+                    if index < languageProgress.count {
+                        languageProgress[index] = progress
+                    } else {
+                        print("Index out of range: \(index)")
+                    }
+                case .law:
+                    if index < lawProgress.count {
+                        lawProgress[index] = progress
+                    } else {
+                        print("Index out of range: \(index)")
+                    }
+                }
+            }
+        }
+    }
+    
+    mutating func setBookmarks(for mode: TestMode, bookmarks: [Int]) {
+        switch mode {
+        case .language:
+            languageBookmarksIds = bookmarks
+        case .history:
+            historyBookmarksIds = bookmarks
+        case .law:
+            lawBookmarksIds = bookmarks
         }
     }
 }
