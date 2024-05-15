@@ -29,9 +29,15 @@ struct MenuView: View {
 struct HeaderView: View {
     var body: some View {
         VStack {
+            /*
+            Image("Flag")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 120)
+                .padding()*/
             Text("🇬🇪").font(.system(size: 120)) // Emoji text
             Text("საქართველოს მოქალაქეობის ტესტები") // Title text
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.heavy)
                 .foregroundColor(.accentColor)
                 .multilineTextAlignment(.center)
@@ -46,10 +52,11 @@ struct ProgressViewContainer: View {
     var body: some View {
         VStack(spacing: 20){
             // Progress views for each category
-            ProgressViewRow(title: "თქვენი პროგრესი", count: 611, value: manager.user.getProgress(mode: .history) + manager.user.getProgress(mode: .law) + manager.user.getProgress(mode: .language)).padding(.bottom)
-            ProgressViewRow(title: "ქართულ ენაში", count: manager.tickets?.languageTickets.count ?? 0, value: manager.user.getProgress(mode: .language))
-            ProgressViewRow(title: "ისტორიაში", count: manager.tickets?.historyTickets.count ?? 0, value: manager.user.getProgress(mode: .history))
-            ProgressViewRow(title: "სამართლის საფუძვლებში", count: manager.tickets?.lawTickets.count ?? 0, value: manager.user.getProgress(mode: .law))
+            ProgressViewRow(title: "თქვენი პროგრესი", count: 611, value: manager.user.getCorrectProgressCount(mode: .history) + manager.user.getCorrectProgressCount(mode: .law) + manager.user.getCorrectProgressCount(mode: .language))
+                .padding(.bottom)
+            ProgressViewRow(title: "ქართულ ენაში", count: manager.tickets?.languageTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .language))
+            ProgressViewRow(title: "ისტორიაში", count: manager.tickets?.historyTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .history))
+            ProgressViewRow(title: "სამართლის საფუძვლებში", count: manager.tickets?.lawTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .law))
         }
         .padding() // Padding for layout
     }
@@ -66,7 +73,7 @@ struct ProgressViewRow: View {
             HStack {
                 Text(title) // Title text
                 Spacer() // Spacer for layout
-                Text("\(count)-დან") // Count text
+                Text("\(count)-დან \(value)") // Count text
             }
 
             ProgressView(value: Float(value), total: Float(count))
