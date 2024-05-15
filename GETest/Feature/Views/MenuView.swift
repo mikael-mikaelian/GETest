@@ -132,7 +132,7 @@ struct TestSelectionButtonView: View {
         .padding()
         .background(background)
         .cornerRadius(20)
-        .shadow(radius: 5)
+        //.shadow(radius: 5)
         .padding(.horizontal)
     }
 }

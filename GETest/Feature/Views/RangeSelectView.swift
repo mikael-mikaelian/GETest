@@ -30,7 +30,9 @@ struct RangeSelectView: View {
                     RangeButtonView(lowerBound:lowerBound, upperBound: upperBound, fetchTickets: { manager.fetchTestSessionTickets(from: lowerBound, to: upperBound) }, selectionIsPresented: $selectionIsPresented).environmentObject(manager)
                         .simultaneousGesture(LongPressGesture(minimumDuration: 0.5, maximumDistance: 10).onEnded({ (b) in
                             generateImpact()
-                            selectionIsPresented = true
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                selectionIsPresented = true
+                            }
                         }))
                         .padding(.horizontal)
                 }
@@ -42,7 +44,9 @@ struct RangeSelectView: View {
         if selectionIsPresented {
             HStack {
                 Button {
-                    manager.switchShuffle()
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        manager.switchShuffle()
+                    }
                 } label: {
                     VStack{
                         Image(systemName: manager.doShuffle ? "shuffle.circle.fill" : "shuffle.circle")
@@ -69,7 +73,9 @@ struct RangeSelectView: View {
                 })
                 Spacer()
                 Button {
-                    selectionIsPresented = false
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        selectionIsPresented = false
+                    }
                 } label: {
                     VStack {
                         Image(systemName: "x.circle")
@@ -103,15 +109,19 @@ struct RangeButtonView: View {
             if imageName == "arrow.right.circle.fill" {
                 if selectionIsPresented {
                     Button {
-                        selected = !selected
-                        manager.switchRange(from: lowerBound, to: upperBound)
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            selected = !selected
+                            manager.switchRange(from: lowerBound, to: upperBound)
+                        }
                     } label: {
                         if !selected {
                             Image(systemName: "circle")
                                 .font(.title)
+                                .transition(.scale)
                         } else {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.title)
+                                .transition(.scale)
                         }
                     }
                 }

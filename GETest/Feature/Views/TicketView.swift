@@ -36,8 +36,10 @@ struct TicketView: View {
                 
                 //Display the bookmark button
                 Button {
-                    generateImpact()
-                    manager.updateBookmarks(for: manager.currentMode, id: (Int(currentQuestionNumber) ?? 0)-1)
+                    withAnimation(.linear(duration: 0.3)) {
+                        generateImpact()
+                        manager.updateBookmarks(for: manager.currentMode, id: (Int(currentQuestionNumber) ?? 0)-1)
+                    }
                 } label: {
                     if (manager.user.getBookmarks(for: manager.currentMode).contains((Int(currentQuestionNumber) ?? 0)-1)) {
                         Image(systemName: "bookmark.fill")
@@ -70,15 +72,17 @@ struct TicketView: View {
                             // Iterate over each answer choice of the ticket.
                             ForEach(ticket.getAnswerChoices(), id: \.self) { answer in
                                 // Display each answer choice as a row button.
-                                AnswerRowButton(answer: answer, ticket: ticket).environmentObject(manager)
+                                AnswerRowButton(answer: answer, ticket: ticket, currectTicketId: $currentQuestionId).environmentObject(manager)
                             }
                             .padding(.bottom)
                         }
                     }
                     .onAppear(){
-                        // Update the current question number when the ticket appears.
-                        currentQuestionNumber = ticket.getTicketNumber()
-                        currentQuestionIdProgress = index
+                            // Update the current question number when the ticket appears.
+                            currentQuestionNumber = ticket.getTicketNumber()
+                        withAnimation(.linear(duration: 0.7)) {
+                            currentQuestionIdProgress = index
+                        }
                     }
                     .tag(index)
                 }
@@ -129,22 +133,27 @@ struct AnswerRowButton: View {
     // The ticket associated with the answer choice.
     @StateObject var ticket: SessionTicket
     // Manager object to handle the test session.
+    @Binding var currectTicketId: Int
     @EnvironmentObject var manager: Manager
     
     // MARK: - Body
     var body: some View {
         Button {
-            generateImpact()
-            // When the button is pressed, mark the answer as selected.
-            answer.isSelected = true
-            // If the answer is correct, update the progress of the ticket and the manager.
-            if answer.isCorrect {
-                ticket.setProgress(progress: .correct)
-                manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .correct)
-            } else {
-                // If the answer is incorrect, mark the progress of the ticket as incorrect.
-                ticket.setProgress(progress: .incorrect)
-                manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .incorrect)
+            withAnimation(.easeInOut(duration: 0.3)) {
+                generateImpact()
+                // When the button is pressed, mark the answer as selected.
+                answer.isSelected = true
+                // If the answer is correct, update the progress of the ticket and the manager.
+                if answer.isCorrect {
+                    ticket.setProgress(progress: .correct)
+                    manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .correct)
+                    currectTicketId += 1
+                    
+                } else {
+                    // If the answer is incorrect, mark the progress of the ticket as incorrect.
+                    ticket.setProgress(progress: .incorrect)
+                    manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .incorrect)
+                }
             }
             
         } label: {
