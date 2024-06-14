@@ -10,16 +10,16 @@ import Foundation
 // MARK: - User Struct
 // This struct represents a user in the test session.
 struct User {
-    var historyProgress:  [Progress] = []  // Progress of the user in history category.
-    var languageProgress: [Progress] = []  // Progress of the user in language category.
-    var lawProgress:      [Progress] = []  // Progress of the user in law category.
+    var historyProgress:  [(String,Progress)] = []  // Progress of the user in history category.
+    var languageProgress: [(String,Progress)] = []  // Progress of the user in language category.
+    var lawProgress:      [(String,Progress)] = []  // Progress of the user in law category.
     
-    var languageBookmarksIds: [Int] = []
-    var historyBookmarksIds:  [Int] = []
-    var lawBookmarksIds:      [Int] = []
+    var languageBookmarksIds: [String] = []
+    var historyBookmarksIds:  [String] = []
+    var lawBookmarksIds:      [String] = []
     
     
-    func getProgress(for mode: TestMode) -> [Progress] {
+    func getProgress(for mode: TestMode) -> [(String,Progress)] {
         switch mode {
         case .language:
             return languageProgress
@@ -30,7 +30,7 @@ struct User {
         }
     }
     
-    func getBookmarks(for mode: TestMode) -> [Int] {
+    func getBookmarks(for mode: TestMode) -> [String] {
         switch mode {
         case .language:
             return languageBookmarksIds
@@ -45,11 +45,11 @@ struct User {
     func getCorrectProgressCount (mode: TestMode) -> Int {
         switch mode {
         case .language:
-            return languageProgress.filter { $0 == .correct }.count
+            return languageProgress.filter { $0.1 == .correct }.count
         case .history:
-            return historyProgress.filter { $0 == .correct }.count
+            return historyProgress.filter { $0.1 == .correct }.count
         case .law:
-            return lawProgress.filter { $0 == .correct }.count
+            return lawProgress.filter { $0.1 == .correct }.count
         }
     }
     
@@ -57,29 +57,42 @@ struct User {
     func getIncorrectProgressCount (mode: TestMode) -> Int {
         switch mode {
         case .language:
-            return languageProgress.filter { $0 == .incorrect }.count
+            return languageProgress.filter { $0.1 == .incorrect }.count
         case .history:
-            return historyProgress.filter { $0 == .incorrect }.count
+            return historyProgress.filter { $0.1 == .incorrect }.count
         case .law:
-            return lawProgress.filter { $0 == .incorrect }.count
+            return lawProgress.filter { $0.1 == .incorrect }.count
         }
     }
     
     // Updates the progress of a specific ticket based on the mode.
-    mutating func updateProgress(for mode: TestMode, id: Int, progress: Progress) {
+    mutating func updateProgress(for mode: TestMode, id: String, progress: Progress) {
         switch mode {
         case .language:
-            languageProgress[id-1] = progress
+            if let index = languageProgress.firstIndex(where: {$0.0 == id}) {
+                languageProgress[index].1 = progress
+            } else {
+                languageProgress.append((id, progress))
+            }
         case .history:
-            historyProgress[id-1] = progress
+            if let index = historyProgress.firstIndex(where: {$0.0 == id}) {
+                historyProgress[index].1 = progress
+            } else {
+                historyProgress.append((id, progress))
+            }
         case .law:
-            lawProgress[id-1] = progress
+            if let index = lawProgress.firstIndex(where: {$0.0 == id}) {
+                lawProgress[index].1 = progress
+            } else {
+                lawProgress.append((id, progress))
+            }
         }
     }
+
     
-    mutating func updateBookmarks(for mode: TestMode, id: Int) {
+    mutating func updateBookmarks(for mode: TestMode, id: String) {
         // Computed property to get and set the appropriate bookmark IDs based on the currentMode
-        var bookmarksIds: [Int]
+        var bookmarksIds: [String]
         
         switch mode {
         case .language:
@@ -89,7 +102,6 @@ struct User {
         case .law:
             bookmarksIds = lawBookmarksIds
         }
-        
         if let index = bookmarksIds.firstIndex(of: id) {
             // If it does, remove it
             bookmarksIds.remove(at: index)
@@ -108,39 +120,19 @@ struct User {
         }
     }
 
-    mutating func updateProgress(progressArray: [[Int: String]], mode: TestMode) {
-        for progressDict in progressArray {
-            for (index, rawValue) in progressDict {
-                guard let progress = Progress(rawValue: rawValue) else {
-                    print("Invalid raw value for Progress enum: \(rawValue)")
-                    continue
-                }
-                
-                switch mode {
-                case .history:
-                    if index < historyProgress.count {
-                        historyProgress[index] = progress
-                    } else {
-                        print("Index out of range: \(index)")
-                    }
-                case .language:
-                    if index < languageProgress.count {
-                        languageProgress[index] = progress
-                    } else {
-                        print("Index out of range: \(index)")
-                    }
-                case .law:
-                    if index < lawProgress.count {
-                        lawProgress[index] = progress
-                    } else {
-                        print("Index out of range: \(index)")
-                    }
-                }
-            }
+    mutating func updateProgress(progressArray: [(String,Progress)], mode: TestMode) {
+        switch mode {
+        case .language:
+            languageProgress = progressArray
+        case .history:
+            historyProgress = progressArray
+        case .law:
+            lawProgress = progressArray
         }
     }
+
     
-    mutating func setBookmarks(for mode: TestMode, bookmarks: [Int]) {
+    mutating func setBookmarks(for mode: TestMode, bookmarks: [String]) {
         switch mode {
         case .language:
             languageBookmarksIds = bookmarks

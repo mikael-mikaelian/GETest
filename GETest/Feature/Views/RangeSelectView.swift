@@ -14,31 +14,37 @@ struct RangeSelectView: View {
     @EnvironmentObject var manager: Manager
     @State var selectionIsPresented = false
     
+    //
     var body: some View {
         ScrollView {
             VStack {
                 HStack() {
-                    RangeButtonView(imageName: "xmark.circle", text: "შეცდომები: \((manager.user.getIncorrectProgressCount(mode: manager.currentMode)) == 0 ? "არარის" : "\(manager.user.getIncorrectProgressCount(mode: manager.currentMode))" )", fetchTickets: manager.fetchMistakeSessionTickets, isDisabled: !manager.user.getProgress(for: manager.currentMode).contains(where: {$0 == .incorrect}), selectionIsPresented: $selectionIsPresented).environmentObject(manager)
+                    RangeButtonView(mistakes: manager.user.getIncorrectProgressCount(mode: manager.currentMode), imageName: "xmark.circle", isDisabled: !manager.user.getProgress(for: manager.currentMode).contains(where: {$0.1 == .incorrect}), selectionIsPresented: $selectionIsPresented).environmentObject(manager)
                     
-                    RangeButtonView(imageName: "bookmark.fill", text: "", fetchTickets: manager.fetchBookmarksSessionTickets, isDisabled: manager.user.getBookmarks(for: manager.currentMode).isEmpty, selectionIsPresented: $selectionIsPresented).environmentObject(manager)
-                }
-                .padding()
+                    RangeButtonView(imageName: "bookmark.fill", isDisabled: manager.user.getBookmarks(for: manager.currentMode).isEmpty, selectionIsPresented: $selectionIsPresented).environmentObject(manager)
+                }.padding()
                 // Display a range selection button for each set of 20 tickets.
-                ForEach(1...9, id: \.self) { index in
-                    let lowerBound = ((index - 1) * 20) + 1
-                    let upperBound = index * 20
-                    RangeButtonView(lowerBound:lowerBound, upperBound: upperBound, fetchTickets: { manager.fetchTestSessionTickets(from: lowerBound, to: upperBound) }, selectionIsPresented: $selectionIsPresented).environmentObject(manager)
-                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.5, maximumDistance: 10).onEnded({ (b) in
-                            generateImpact()
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                selectionIsPresented = true
-                            }
-                        }))
-                        .padding(.horizontal)
+                 
+                if manager.currentMode == .language {
+                    ForEach(manager.getChapters(for: manager.currentMode), id: \.self) { chapter in
+                        Text(chapter)
+                            .font(.title3)
+                        ForEach(manager.getTopics(for: manager.currentMode, chapterName: chapter)) { topic in
+                            RangeButtonView(topic: topic, chapter: chapter, selectionIsPresented: $selectionIsPresented)
+                                .padding(.horizontal)
+                        }
+                    }
+                } else if manager.currentMode == .history {
+                    ForEach(manager.getTopics(for: manager.currentMode)) { topic in
+                        RangeButtonView(topic: topic, selectionIsPresented: $selectionIsPresented)
+                            .padding(.horizontal)
+                    }
+                } else if manager.currentMode == .law {
+                    ForEach(1...10, id: \.self) { index in
+                        RangeButtonView(range: (((index - 1) * 20) + 1,index * 20), selectionIsPresented: $selectionIsPresented)
+                            .padding(.horizontal)
+                    }
                 }
-                // Display a range selection button for the last set of tickets.
-                RangeButtonView(lowerBound:180, upperBound: manager.getTickets(for: manager.currentMode).count, fetchTickets: { manager.fetchTestSessionTickets(from: 180, to: manager.getTickets(for: manager.currentMode).count) }, selectionIsPresented: $selectionIsPresented).environmentObject(manager)
-                    .padding(.horizontal)
             }
         }
         if selectionIsPresented {
@@ -69,7 +75,7 @@ struct RangeSelectView: View {
                 }
                 .simultaneousGesture(TapGesture().onEnded{
                     // When the navigation link is tapped, set the mode in the manager
-                    manager.fetchTestSessionTickets()
+                    //manager.fetchTestSessionTickets(from: <#[Ticket]#>)
                 })
                 Spacer()
                 Button {
@@ -82,7 +88,7 @@ struct RangeSelectView: View {
                             .font(.title)
                         Text("გაუქმება")
                             .foregroundColor(.primary)
-
+                        
                     }
                 }
             }.padding()
@@ -94,12 +100,12 @@ struct RangeSelectView: View {
 // MARK: - RangeButtonView
 // A view that represents a button for selecting a range of tickets.
 struct RangeButtonView: View {
-    var imageName: String = "arrow.right.circle.fill"
-    var text: String = ""
-    var lowerBound: Int = 0
-    var upperBound: Int = 0
-    var fetchTickets: () -> Void
-    var isDisabled: Bool = false
+    var topic       : String?
+    var chapter     : String?
+    var range       : (Int, Int)?
+    var mistakes    : Int?
+    var imageName   : String = "arrow.right.circle.fill"
+    var isDisabled  : Bool = false
     @EnvironmentObject var manager: Manager
     @Binding var selectionIsPresented: Bool
     @State var selected = false
@@ -111,7 +117,7 @@ struct RangeButtonView: View {
                     Button {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             selected = !selected
-                            manager.switchRange(from: lowerBound, to: upperBound)
+                            //manager.switchRange(from: lowerBound, to: upperBound)
                         }
                     } label: {
                         if !selected {
@@ -130,17 +136,23 @@ struct RangeButtonView: View {
                 // Navigate to the TicketView when the last range is selected.
                 TicketView().environmentObject(manager)
             } label: {
-                HStack{
-                    // Display the range text.
-                    if (imageName != "bookmark.fill"){
-                        Text(imageName == "arrow.right.circle.fill" ? "\(lowerBound)-\(upperBound)" : "შეცდომები")
+                HStack {
+                    if let topic = topic {
+                        Text(topic)
+                            .font(.title2)
+                        Spacer(minLength: 20)
+                        
+                    } else if let range = range {
+                        Text("\(range.0)-\(range.1)")
+                        Spacer(minLength: 20)
+                    } else if let mistakes = mistakes {
+                        Text("შეცდომები: \(mistakes == 0 ? "არარის" : "\(mistakes)")")
                             .font(.title2)
                         Spacer()
                     }
                     Image(systemName: imageName)
                         .font(.largeTitle)
                         .foregroundStyle(Color.accentColor)
-                    
                 }
                 .padding()
                 .foregroundColor(.primary)
@@ -149,9 +161,16 @@ struct RangeButtonView: View {
             }
             .simultaneousGesture(TapGesture().onEnded{
                 // Set the range in the manager when a range is selected.
-                fetchTickets()
-                generateImpact()
+                    switch imageName {
+                    case "bookmark.fill":
+                        manager.fetchBookmarksSessionTickets()
+                    case "xmark.circle":
+                        manager.fetchMistakeSessionTickets()
+                    default:
+                        manager.fetchTestSessionTickets(chapterName: chapter, topicName: topic, range: range)
+                    }
             })
+            
             .disabled(isDisabled || selectionIsPresented)
         }
     }

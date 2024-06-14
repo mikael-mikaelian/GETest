@@ -69,6 +69,10 @@ class SessionTicket: Identifiable, Hashable, ObservableObject {
         return ticket.correctAnswer
     }
     
+    func getUUID() -> UUID {
+        return ticket.id
+    }
+    
     // Equality operator for SessionTicket.
     static func == (lhs: SessionTicket, rhs: SessionTicket) -> Bool {
         return lhs.id == rhs.id

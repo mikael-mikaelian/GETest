@@ -14,7 +14,7 @@ struct TicketView: View {
     @EnvironmentObject var manager: Manager
     // The current question number being displayed.
     @State var currentQuestionNumber: String = ""
-    @State var currentQuestionId = 0
+    @State var currentQuestionIndex = Int()
     @State var currentQuestionIdProgress = 0
     
     
@@ -38,23 +38,34 @@ struct TicketView: View {
                 Button {
                     withAnimation(.linear(duration: 0.3)) {
                         generateImpact()
-                        manager.updateBookmarks(for: manager.currentMode, id: (Int(currentQuestionNumber) ?? 0)-1)
+                        manager.updateBookmarks(for: manager.currentMode, id: currentQuestionNumber)
                     }
                 } label: {
-                    if (manager.user.getBookmarks(for: manager.currentMode).contains((Int(currentQuestionNumber) ?? 0)-1)) {
+                    
+                    if (manager.user.getBookmarks(for: manager.currentMode).contains(currentQuestionNumber)) {
                         Image(systemName: "bookmark.fill")
                     } else {
                         Image(systemName: "bookmark")
                     }
+                     
                 }
             }
             .padding()
             
-            ProgressView(value: Float(Int(currentQuestionIdProgress) ), total: Float(manager.sessionTickets.count))
-                .padding()
+            VStack{
+                HStack {
+                    Text("\(manager.sessionTickets.count)-დან \(currentQuestionIndex+1)")
+                        .opacity(0.5)
+                        .font(.callout)
+                    Spacer()
+                }
+                ProgressView(value: Float(Int(currentQuestionIndex) ), total: Float(manager.sessionTickets.count))
+            }
+            .padding()
+                
             
             // MARK: - Question
-            TabView(selection: $currentQuestionId) {
+            TabView(selection: $currentQuestionIndex) {
                 // Iterate over each ticket in the test session.
                 ForEach(Array(manager.sessionTickets.enumerated()), id: \.element) { index, ticket in
                     VStack{
@@ -64,6 +75,11 @@ struct TicketView: View {
                                 .multilineTextAlignment(.leading)
                                 .padding()
                                 .font(.title2)
+                                .onLongPressGesture(perform: {
+                                    generateImpact()
+                                    let pasteboard = UIPasteboard.general
+                                    pasteboard.string = ticket.getTicketQuestion()
+                                })
                             Spacer()
                         }
                         
@@ -72,7 +88,7 @@ struct TicketView: View {
                             // Iterate over each answer choice of the ticket.
                             ForEach(ticket.getAnswerChoices(), id: \.self) { answer in
                                 // Display each answer choice as a row button.
-                                AnswerRowButton(answer: answer, ticket: ticket, currectTicketId: $currentQuestionId).environmentObject(manager)
+                                AnswerRowButton(answer: answer, ticket: ticket, currectTicketId: $currentQuestionIndex).environmentObject(manager)
                             }
                             .padding(.bottom)
                         }
@@ -88,21 +104,35 @@ struct TicketView: View {
                 }
             }.tabViewStyle(PageTabViewStyle())
             
-            Button {
-                generateImpact()
-                currentQuestionId += currentQuestionId == manager.sessionTickets.count-1 ? 0 : 1
-            } label: {
-                HStack{
-                    Spacer()
-                    Text("შემდეგი შეკითხვა")
-                    Spacer()
+            HStack {
+                Button {
+                    generateImpact()
+                    currentQuestionIndex += currentQuestionIndex == manager.sessionTickets.count-1 ? 0 : 1
+                } label: {
+                    HStack{
+                        Spacer()
+                        Text("შემდეგი შეკითხვა")
+                        Spacer()
+                    }
+                    .foregroundColor(Color(.white))
+                    .padding()
+                    .background(Color.accentColor)
+                    .cornerRadius(20)
                 }
-                .foregroundColor(Color(.white))
-                .padding()
-                .background(Color.accentColor)
-                .cornerRadius(20)
-                .padding(.horizontal)
-            }
+                Button {
+                    manager.shuffleTestSessionTickets()
+                } label: {
+                    HStack{
+                        Image(systemName: "shuffle")
+                    }
+                    .font(.title3)
+                    .foregroundColor(Color(.white))
+                    .padding()
+                    .background(Color.accentColor)
+                    .cornerRadius(20)
+                }
+            }.padding(.horizontal)
+
             
             
             
@@ -138,25 +168,7 @@ struct AnswerRowButton: View {
     
     // MARK: - Body
     var body: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                generateImpact()
-                // When the button is pressed, mark the answer as selected.
-                answer.isSelected = true
-                // If the answer is correct, update the progress of the ticket and the manager.
-                if answer.isCorrect {
-                    ticket.setProgress(progress: .correct)
-                    manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .correct)
-                    currectTicketId += 1
-                    
-                } else {
-                    // If the answer is incorrect, mark the progress of the ticket as incorrect.
-                    ticket.setProgress(progress: .incorrect)
-                    manager.updateProgress(for: manager.currentMode, id: ticket.getTicketIntNumber(), progress: .incorrect)
-                }
-            }
-            
-        } label: {
+        
             HStack{
                 // Display the text of the answer choice.
                 Text(answer.answerText)
@@ -170,8 +182,31 @@ struct AnswerRowButton: View {
             .background(Material.regular)
             .cornerRadius(20)
             .padding(.horizontal)
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    generateImpact()
+                    // When the button is pressed, mark the answer as selected.
+                    answer.isSelected = true
+                    // If the answer is correct, update the progress of the ticket and the manager.
+                    if answer.isCorrect {
+                        ticket.setProgress(progress: .correct)
+                        manager.updateProgress(for: manager.currentMode, id: ticket.getTicketNumber(), progress: .correct)
+                        currectTicketId += currectTicketId == manager.sessionTickets.count-1 ? 0 : 1
+                        
+                    } else {
+                        // If the answer is incorrect, mark the progress of the ticket as incorrect.
+                        ticket.setProgress(progress: .incorrect)
+                        manager.updateProgress(for: manager.currentMode, id: ticket.getTicketNumber(), progress: .incorrect)
+                    }
+                }
+            }
+            .onLongPressGesture(perform: {
+                generateImpact()
+                let pasteboard = UIPasteboard.general
+                pasteboard.string = answer.answerText
+            })
             
-        }
+
         
         
         // Disable the button if the progress of the ticket is not incomplete.

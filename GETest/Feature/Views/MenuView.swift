@@ -3,21 +3,21 @@
 // Created by Mikael Mikaelian on 5/3/24.
 
 import SwiftUI
+import ActivityKit
 
 // MARK: - Main view of the application
 struct MenuView: View {
     @StateObject var manager = Manager() // Manager object to handle data
-    let totalTestPreparations = 611 // Total number of test preparations
 
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
                 HeaderView() // Header view with emoji and title
-
+                
                 ProgressViewContainer().environmentObject(manager) // Container for progress views
-
+                
                 Spacer() // Spacer for layout
-
+                
                 TestSelectionButtons().environmentObject(manager) // Buttons for test selection
             }
         }
@@ -29,12 +29,7 @@ struct MenuView: View {
 struct HeaderView: View {
     var body: some View {
         VStack {
-            /*
-            Image("Flag")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 120)
-                .padding()*/
+            //Image("Flag")
             Text("🇬🇪").font(.system(size: 120)) // Emoji text
             Text("საქართველოს მოქალაქეობის ტესტები") // Title text
                 .font(.title3)
@@ -48,15 +43,15 @@ struct HeaderView: View {
 // MARK: - Container for progress views
 struct ProgressViewContainer: View {
     @EnvironmentObject var manager: Manager // Manager object to handle data
-
+    
     var body: some View {
         VStack(spacing: 20){
             // Progress views for each category
-            ProgressViewRow(title: "თქვენი პროგრესი", count: 611, value: manager.user.getCorrectProgressCount(mode: .history) + manager.user.getCorrectProgressCount(mode: .law) + manager.user.getCorrectProgressCount(mode: .language))
+            ProgressViewRow(title: "თქვენი პროგრესი", count: 600, value: manager.user.getCorrectProgressCount(mode: .history) + manager.user.getCorrectProgressCount(mode: .law) + manager.user.getCorrectProgressCount(mode: .language))
                 .padding(.bottom)
-            ProgressViewRow(title: "ქართულ ენაში", count: manager.tickets?.languageTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .language))
-            ProgressViewRow(title: "ისტორიაში", count: manager.tickets?.historyTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .history))
-            ProgressViewRow(title: "სამართლის საფუძვლებში", count: manager.tickets?.lawTickets.count ?? 0, value: manager.user.getCorrectProgressCount(mode: .law))
+            ProgressViewRow(title: "ქართულ ენაში", count: manager.tickets?.languageTickets.getTicketsCount() ?? 0, value: manager.user.getCorrectProgressCount(mode: .language))
+            ProgressViewRow(title: "ისტორიაში", count: manager.tickets?.historyTickets.getTicketsCount() ?? 0, value: manager.user.getCorrectProgressCount(mode: .history))
+            ProgressViewRow(title: "სამართლის საფუძვლებში", count: manager.tickets?.lawTickets.getTicketsCount() ?? 0, value: manager.user.getCorrectProgressCount(mode: .law))
         }
         .padding() // Padding for layout
     }
@@ -67,7 +62,7 @@ struct ProgressViewRow: View {
     let title: String // Title for the row
     let count: Int // Count for the progress
     let value: Int
-
+    
     var body: some View {
         VStack {
             HStack {
@@ -75,7 +70,7 @@ struct ProgressViewRow: View {
                 Spacer() // Spacer for layout
                 Text("\(count)-დან \(value)") // Count text
             }
-
+            
             ProgressView(value: Float(value), total: Float(count))
         }
     }
@@ -84,7 +79,7 @@ struct ProgressViewRow: View {
 // MARK: - Buttons for test selection
 struct TestSelectionButtons: View {
     @EnvironmentObject var manager: Manager // An observed object that manages the data
-
+    
     // A list of test modes and their corresponding titles
     // Each tuple contains a mode and a title
     let testModes: [(mode: TestMode, title: String)] = [
@@ -92,7 +87,7 @@ struct TestSelectionButtons: View {
         (.history, "ისტორია"), // History test
         (.law, "სამართლის საფუძვლები") // Law foundations test
     ]
-
+    
     var body: some View {
         VStack(spacing: 20) {
             // Iterate over the test modes

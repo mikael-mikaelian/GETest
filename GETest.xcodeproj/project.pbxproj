@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6C0DB9042BF252690068E731 /* SessionTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0DB9032BF252690068E731 /* SessionTicket.swift */; };
 		6C0DB9062BF252960068E731 /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0DB9052BF252960068E731 /* Answer.swift */; };
+		6C36BD392BF9ECDD0080CC5D /* ActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C36BD382BF9ECDD0080CC5D /* ActivityWidget.swift */; };
 		6C4AD7B12BF498EB000427D4 /* UserModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6C4AD7AF2BF498EB000427D4 /* UserModel.xcdatamodeld */; };
 		6C5540552BF358FA0047CAED /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5540542BF358FA0047CAED /* Extensions.swift */; };
 		6C6D3A872BF4A4E800B2CA14 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6D3A862BF4A4E800B2CA14 /* CoreDataManager.swift */; };
@@ -40,6 +41,7 @@
 /* Begin PBXFileReference section */
 		6C0DB9032BF252690068E731 /* SessionTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTicket.swift; sourceTree = "<group>"; };
 		6C0DB9052BF252960068E731 /* Answer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
+		6C36BD382BF9ECDD0080CC5D /* ActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityWidget.swift; sourceTree = "<group>"; };
 		6C4AD7B02BF498EB000427D4 /* UserModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserModel.xcdatamodel; sourceTree = "<group>"; };
 		6C5540542BF358FA0047CAED /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		6C6D3A862BF4A4E800B2CA14 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				6CF377E42BE4FFEC004D4114 /* MenuView.swift */,
 				6CF377FB2BE518A4004D4114 /* RangeSelectView.swift */,
 				6CBBA1D82BE550B60083D533 /* TicketView.swift */,
+				6C36BD382BF9ECDD0080CC5D /* ActivityWidget.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 				6C8308BB2BF0CC4200DD3929 /* User.swift in Sources */,
 				6CF377E32BE4FFEC004D4114 /* GETestApp.swift in Sources */,
 				6C4AD7B12BF498EB000427D4 /* UserModel.xcdatamodeld in Sources */,
+				6C36BD392BF9ECDD0080CC5D /* ActivityWidget.swift in Sources */,
 				6CF377FC2BE518A4004D4114 /* RangeSelectView.swift in Sources */,
 				6CF377F52BE50498004D4114 /* Manager.swift in Sources */,
 			);
