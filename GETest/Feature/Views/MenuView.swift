@@ -3,7 +3,6 @@
 // Created by Mikael Mikaelian on 5/3/24.
 
 import SwiftUI
-import ActivityKit
 
 // MARK: - Main view of the application
 struct MenuView: View {
@@ -103,6 +102,7 @@ struct TestSelectionButtons: View {
                 })
             }
         }
+        .padding(.vertical)
     }
 }
 

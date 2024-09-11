@@ -131,7 +131,7 @@ struct TicketView: View {
                     .background(Color.accentColor)
                     .cornerRadius(20)
                 }
-            }.padding(.horizontal)
+            }.padding()
 
             
             
