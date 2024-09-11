@@ -113,6 +113,21 @@ class Manager: ObservableObject {
         }
     }
     
+    /// Fetches 10 random questions from the question pull
+    func fetchExamTickets() {
+        sessionTickets.removeAll()
+        sessionTickets = getTickets(for: currentMode).shuffled().prefix(upTo: 10).map { ticket in
+            SessionTicket(ticket: ticket)
+        }
+    }
+    
+    func fetchAllTickets() {
+        sessionTickets.removeAll()
+        sessionTickets = getTickets(for: currentMode).map { ticket in
+            SessionTicket(ticket: ticket)
+        }
+    }
+    
     /// Fetch session tickets where the user made a mistake
         func fetchMistakeSessionTickets() {
             // Fetching the progress based on the current mode

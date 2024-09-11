@@ -22,6 +22,9 @@ struct RangeSelectView: View {
                     RangeButtonView(mistakes: manager.user.getIncorrectProgressCount(mode: manager.currentMode), imageName: "xmark.circle", isDisabled: !manager.user.getProgress(for: manager.currentMode).contains(where: {$0.1 == .incorrect}), selectionIsPresented: $selectionIsPresented).environmentObject(manager)
                     
                     RangeButtonView(imageName: "bookmark.fill", isDisabled: manager.user.getBookmarks(for: manager.currentMode).isEmpty, selectionIsPresented: $selectionIsPresented).environmentObject(manager)
+                    
+                    RangeButtonView(exam: true, imageName: "arrow.triangle.2.circlepath.doc.on.clipboard", selectionIsPresented: $selectionIsPresented).environmentObject(manager)
+                    
                 }.padding()
                 // Display a range selection button for each set of 20 tickets.
                  
@@ -45,6 +48,10 @@ struct RangeSelectView: View {
                             .padding(.horizontal)
                     }
                 }
+                
+                
+                RangeButtonView(all: true, selectionIsPresented: $selectionIsPresented)
+                    .padding()
             }
         }
         if selectionIsPresented {
@@ -104,6 +111,8 @@ struct RangeButtonView: View {
     var chapter     : String?
     var range       : (Int, Int)?
     var mistakes    : Int?
+    var exam        : Bool?
+    var all         : Bool?
     var imageName   : String = "arrow.right.circle.fill"
     var isDisabled  : Bool = false
     @EnvironmentObject var manager: Manager
@@ -147,7 +156,10 @@ struct RangeButtonView: View {
                         Spacer(minLength: 20)
                     } else if let mistakes = mistakes {
                         Text("შეცდომები: \(mistakes == 0 ? "არარის" : "\(mistakes)")")
-                            .font(.title2)
+                           
+                        Spacer()
+                    } else if let all = all {
+                        Text("ყვალა კითხვა")
                         Spacer()
                     }
                     Image(systemName: imageName)
@@ -161,6 +173,11 @@ struct RangeButtonView: View {
             }
             .simultaneousGesture(TapGesture().onEnded{
                 // Set the range in the manager when a range is selected.
+                if exam == true {
+                    manager.fetchExamTickets()
+                } else if all == true {
+                    manager.fetchAllTickets() }
+                else {
                     switch imageName {
                     case "bookmark.fill":
                         manager.fetchBookmarksSessionTickets()
@@ -169,6 +186,7 @@ struct RangeButtonView: View {
                     default:
                         manager.fetchTestSessionTickets(chapterName: chapter, topicName: topic, range: range)
                     }
+                }
             })
             
             .disabled(isDisabled || selectionIsPresented)
