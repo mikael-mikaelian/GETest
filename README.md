@@ -8,7 +8,7 @@ GETest is a test application designed to help users prepare for the citizenship 
 - **Performance Tracking**: The app tracks the user's performance and identifies areas of improvement.
 - **Review Mode**: Users can review their mistakes and learn from them to avoid repeating them in the future.
 
-<img src="https://i.ibb.co/z7XV8v2/photo-2024-04-16-20-47-45.jpg" width="200"/>             <img src="https://i.ibb.co/TbznLKN/photo-2024-04-16-20-48-01.jpg" width="200"/>  <img src="https://i.ibb.co/kMjvVLb/photo-2024-04-16-20-48-03.jpg" width="200"/>             <img src="https://i.ibb.co/QvjSkFW/photo-2024-04-16-20-48-05.jpg" width="200"/>
+<img src="https://i.ibb.co/CMXrVJx/photo-2024-09-11-20-16-17.jpg" width="200"/>             <img src="https://i.ibb.co/W5H7T8z/photo-2024-09-11-20-16-19.jpg" width="200"/>  <img src="https://i.ibb.co/ByffHJS/photo-2024-09-11-20-16-20.jpg" width="200"/>             <img src="https://i.ibb.co/qJMLDCj/photo-2024-09-11-20-16-21.jpg" width="200"/>
 
 ## Requirements
 - iOS 16.0 or later
